@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Genealogy of the Shire · Kings' Tree</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Great+Vibes&family=UnifrakturMaguntia&family=Pinyon+Script&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="hobbits-styles.css">
+
+<style>
+#back-btn {
+  position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+  z-index: 9999;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 11px; font-style: italic; letter-spacing: 1.8px;
+  color: #2D6E2D; background: rgba(245,240,220,0.92);
+  border: 1px solid #8AB870; border-radius: 2px;
+  padding: 5px 18px; cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.18s, color 0.18s;
+  text-decoration: none; display: inline-block;
+}
+#back-btn:hover { background: rgba(230,240,210,0.98); color: #1A4A0E; }
+</style>
+
+<script>
+window.TWEAK_DEFAULTS = {
+  "bg": "plain",
+  "density": "spacious",
+  "cardStyle": "medallion"
+};
+</script>
+</head>
+<body class="bg-plain">
+
+<header id="app-header">
+  <div id="brand">
+    <svg id="brand-leaf" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" width="38" height="38" style="flex-shrink:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.2))">
+      <defs>
+        <linearGradient id="leaf-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"  stop-color="#7AD054"/>
+          <stop offset="60%" stop-color="#2D6E2D"/>
+          <stop offset="100%" stop-color="#1A4A0E"/>
+        </linearGradient>
+      </defs>
+      <path d="M24 6 C14 9 7 18 8 27 C9 36 18 42 24 44 C30 42 39 36 40 27 C41 18 34 9 24 6 Z"
+            fill="url(#leaf-grad)" stroke="#1A4A0E" stroke-width="1.2"/>
+      <line x1="24" y1="8" x2="24" y2="44" stroke="rgba(255,255,200,0.45)" stroke-width="1"/>
+      <path d="M24 16 Q17 20 15 27" stroke="rgba(255,255,200,0.35)" stroke-width="0.8" fill="none"/>
+      <path d="M24 16 Q31 20 33 27" stroke="rgba(255,255,200,0.35)" stroke-width="0.8" fill="none"/>
+      <path d="M24 26 Q19 29 17 34" stroke="rgba(255,255,200,0.28)" stroke-width="0.7" fill="none"/>
+      <path d="M24 26 Q29 29 31 34" stroke="rgba(255,255,200,0.28)" stroke-width="0.7" fill="none"/>
+      <circle cx="24" cy="6" r="2.8" fill="#D4AE5E" stroke="#8C6818" stroke-width="0.8"/>
+    </svg>
+    <div id="brand-text">
+      <div id="brand-title">Genealogy of the Shire</div>
+      <div id="brand-sub">hobbits of the third age</div>
+    </div>
+  </div>
+
+  <div id="header-controls">
+    <button id="search-btn" class="hdr-btn" title="Search (/)" aria-label="Search">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+        <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.8"/>
+        <line x1="11" y1="11" x2="14" y2="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div id="lang-switch">
+      <button class="lang-btn active" data-lang="pl">PL</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="es">ES</button>
+      <button class="lang-btn" data-lang="fr">FR</button>
+    </div>
+  </div>
+</header>
+
+<div id="main">
+
+  <main id="tree-wrap">
+    <svg id="tree-svg"></svg>
+  </main>
+
+  <aside id="sidebar">
+    <button id="sb-handle" data-label="RECORD · BIO" aria-label="Open/close card">
+      <span id="sb-arrow">◀</span>
+    </button>
+    <button id="edit-pencil-btn" title="Edit data" aria-label="Toggle edit mode">✏️</button>
+    <div id="sb-content"></div>
+  </aside>
+
+</div>
+
+<div id="search-overlay">
+  <div id="search-box" onclick="event.stopPropagation()">
+    <input id="search-input" type="text" autocomplete="off" spellcheck="false"
+           placeholder="Search a name or family…">
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<div id="tweaks-panel">
+  <div class="tweaks-head">
+    <span>SETTINGS · TWEAKS</span>
+    <button id="tweaks-close" class="tweaks-close" aria-label="Close">×</button>
+  </div>
+  <div class="tweaks-body">
+    <div class="tweak-section" id="tw-bg">
+      <div class="tweak-label">BACKGROUND</div>
+      <div class="tweak-row">
+        <button class="tweak-btn" data-val="paper">parchment</button>
+        <button class="tweak-btn" data-val="linen">linen</button>
+        <button class="tweak-btn" data-val="plain">plain</button>
+      </div>
+    </div>
+    <div class="tweak-section" id="tw-density">
+      <div class="tweak-label">TREE</div>
+      <div class="tweak-row">
+        <button class="tweak-btn" data-val="compact">compact</button>
+        <button class="tweak-btn" data-val="spacious">spacious</button>
+      </div>
+    </div>
+    <div class="tweak-section" id="tw-cards">
+      <div class="tweak-label">CARDS</div>
+      <div class="tweak-row">
+        <button class="tweak-btn" data-val="medallion">medallion</button>
+        <button class="tweak-btn" data-val="heraldic">heraldic</button>
+        <button class="tweak-btn" data-val="storybook">storybook</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<a id="back-btn" href="index.html">← Chronica Originum</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="hobbits.js"></script>
+<script src="kings-engine.js"></script>
+<script src="hobbits-app.js"></script>
+<script src="hobbits-music.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Your Tree · Chronica Originum</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; scroll-behavior: smooth; }
+body {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  background: #FAF6EE;
+  color: #2A1A0A;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+.page-header {
+  background: linear-gradient(180deg, #1A0A02 0%, #3A1A06 100%);
+  padding: 22px 24px 18px;
+  text-align: center;
+  border-bottom: 2px solid #8C6418;
+  flex-shrink: 0;
+  position: relative;
+}
+#form-lang-switch { position: absolute; top: 14px; right: 14px; display: flex; gap: 4px; }
+.lang-btn {
+  font-family: 'Cinzel', serif; font-size: 8px; font-weight: 600;
+  letter-spacing: 1.5px; padding: 4px 8px; border-radius: 2px;
+  border: 1px solid #5A3A10; background: none; color: #A08858;
+  cursor: pointer; transition: background 0.15s, color 0.15s;
+}
+.lang-btn.active { background: #8C6418; color: #F0D595; border-color: #8C6418; }
+.lang-btn:hover:not(.active) { background: rgba(140,100,24,0.15); }
+.page-header h1 {
+  font-family: 'Cinzel', serif; font-size: 20px; font-weight: 600;
+  letter-spacing: 3px; color: #F0D595; text-transform: uppercase;
+}
+.page-header p { font-size: 12px; color: #A08858; letter-spacing: 1px; margin-top: 5px; font-style: italic; }
+
+/* ── Step tabs ──────────────────────────────────────────────────── */
+.step-tabs {
+  display: flex; background: #2A1206; border-bottom: 1px solid #5A3A10;
+  flex-shrink: 0; overflow-x: auto;
+}
+.step-tab {
+  flex: 1; min-width: 80px;
+  padding: 11px 6px 9px;
+  text-align: center;
+  font-family: 'Cinzel', serif; font-size: 8px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  color: #7A6040; cursor: pointer; border: none;
+  background: none; border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.step-tab:hover { color: #C8A060; }
+.step-tab.active { color: #F0D595; border-bottom-color: #C8A060; }
+.step-tab.done { color: #A08840; }
+.step-tab .step-num {
+  display: block; font-size: 14px; line-height: 1.2; margin-bottom: 2px;
+}
+
+/* ── Step body ──────────────────────────────────────────────────── */
+.step-body { display: none; flex: 1; overflow-y: auto; padding: 28px 20px 90px; max-width: 740px; margin: 0 auto; width: 100%; }
+.step-body.active { display: block; }
+
+.step-title {
+  font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600;
+  letter-spacing: 2.5px; color: #5A2A08; text-transform: uppercase;
+  margin-bottom: 20px; padding-bottom: 10px;
+  border-bottom: 1px solid #D4B896;
+}
+
+/* ── Person card ────────────────────────────────────────────────── */
+.person-card {
+  border: 1px solid #E0C8A8; border-radius: 3px;
+  padding: 16px 16px 12px; margin-bottom: 16px;
+  background: #FFF9EE; position: relative;
+}
+.card-label {
+  font-family: 'Cinzel', serif; font-size: 9px; font-weight: 600;
+  letter-spacing: 2px; color: #8B5020; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.remove-btn {
+  position: absolute; top: 12px; right: 12px;
+  background: none; border: none; cursor: pointer;
+  font-size: 16px; color: #C0A080; line-height: 1;
+}
+.remove-btn:hover { color: #9B2020; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; margin-bottom: 10px; }
+.field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+.field-row.full  { grid-template-columns: 1fr; }
+.field-group { display: flex; flex-direction: column; gap: 3px; }
+.field-group label {
+  font-size: 8.5px; letter-spacing: 1.8px; color: #8B7050;
+  text-transform: uppercase; font-family: 'Cinzel', serif;
+}
+.field-group input, .field-group select, .field-group textarea {
+  border: 1px solid #D4B896; border-radius: 2px; padding: 6px 9px;
+  font-family: 'Cormorant Garamond', Georgia, serif; font-size: 14px;
+  color: #2A1A0A; background: #FFFCF7; outline: none;
+  transition: border-color 0.15s;
+}
+.field-group input:focus, .field-group select:focus, .field-group textarea:focus { border-color: #8B5020; }
+.field-group textarea { resize: vertical; min-height: 70px; line-height: 1.5; }
+.gender-row { display: flex; gap: 14px; align-items: center; padding-top: 4px; }
+.gender-row label { display: flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer; text-transform: none; letter-spacing: 0; font-family: inherit; color: #3A2A10; }
+.gender-row input[type=radio] { accent-color: #8B5020; }
+
+.section-label {
+  font-size: 12px; color: #8B7050; font-style: italic; margin-bottom: 12px;
+}
+
+.add-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 1px dashed #C8A060; border-radius: 3px;
+  padding: 7px 14px; font-family: 'Cinzel', serif; font-size: 9px;
+  font-weight: 600; letter-spacing: 1.8px; color: #8B5020;
+  cursor: pointer; text-transform: uppercase;
+  transition: background 0.15s, border-color 0.15s; margin-top: 4px;
+}
+.add-btn:hover { background: #FFF0D8; border-color: #8B5020; }
+
+/* ── Nav bar ────────────────────────────────────────────────────── */
+.nav-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(250,246,238,0.96);
+  border-top: 1px solid #D4B896;
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 20px;
+  gap: 10px;
+}
+.nav-left, .nav-right { display: flex; gap: 8px; }
+.btn-nav {
+  font-family: 'Cinzel', serif; font-size: 9.5px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 9px 22px; cursor: pointer; border-radius: 2px;
+  transition: background 0.18s, color 0.18s;
+}
+.btn-prev {
+  background: none; border: 1px solid #C8B090; color: #6A4A20;
+}
+.btn-prev:hover { background: #F5EAD8; }
+.btn-next {
+  background: #5A2A08; border: 1px solid #5A2A08; color: #F0D595;
+}
+.btn-next:hover { background: #3A1A04; }
+.btn-view {
+  background: #8B1A2A; border: 1px solid #8B1A2A; color: #FFF8E8;
+  font-size: 10.5px; letter-spacing: 2.5px;
+}
+.btn-view:hover { background: #5A0A14; border-color: #5A0A14; }
+.btn-dl {
+  background: none; border: 1px solid #C8B090; color: #6A4A20; font-size: 9px;
+}
+.btn-dl:hover { background: #F5EAD8; }
+
+/* ── Save panel (step 6) ────────────────────────────────────────── */
+.save-card {
+  border: 1px solid #E0C8A8; border-radius: 3px;
+  background: #FFF9EE; text-align: center;
+  padding: 40px 28px 36px; margin-top: 8px;
+}
+.save-tree-name {
+  font-family: 'Cinzel', serif; font-size: 20px; font-weight: 600;
+  color: #5A2A08; letter-spacing: 1.5px; margin-bottom: 6px;
+}
+.save-tree-meta {
+  font-size: 13px; color: #8B7050; font-style: italic; margin-bottom: 32px;
+}
+.btn-save-big {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: #5A2A08; border: 2px solid #5A2A08; color: #F0D595;
+  font-family: 'Cinzel', serif; font-size: 11px; font-weight: 600;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  padding: 14px 36px; border-radius: 2px; cursor: pointer;
+  transition: background 0.18s;
+}
+.btn-save-big:hover { background: #3A1A04; border-color: #3A1A04; }
+.btn-save-big .dl-icon { font-size: 22px; line-height: 1; }
+.save-confirm {
+  display: none; margin-top: 28px;
+}
+.save-confirm-msg {
+  color: #2A6A2A; font-size: 14px; font-style: italic; margin-bottom: 20px;
+}
+.save-confirm-msg strong { font-style: normal; }
+.save-note {
+  margin-top: 28px; padding: 14px 18px;
+  background: #F5EED8; border: 1px solid #D8C898; border-radius: 2px;
+  font-size: 12px; color: #6A5030; line-height: 1.6; text-align: left;
+}
+
+.nav-step-info {
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 1.5px;
+  color: #A08850; text-transform: uppercase; text-align: center; flex: 1;
+}
+
+/* ── Back btn ───────────────────────────────────────────────────── */
+#back-btn {
+  position: fixed; bottom: 54px; left: 50%; transform: translateX(-50%);
+  z-index: 9999; font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 10px; font-style: italic; letter-spacing: 1.8px;
+  color: #8B1A2A; background: rgba(250,246,238,0.88);
+  border: 1px solid #C8A090; border-radius: 2px;
+  padding: 4px 14px; cursor: pointer; backdrop-filter: blur(4px);
+  text-decoration: none; display: inline-block;
+}
+#back-btn:hover { color: #5A0A14; }
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .field-row, .field-row.three { grid-template-columns: 1fr; }
+  .step-tab .step-num { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1 id="form-page-title">Build Your Family Tree</h1>
+  <p id="form-page-sub">Fill in generation by generation · your data stays in your browser</p>
+  <div id="form-lang-switch">
+    <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" data-lang="pl" onclick="setLang('pl')">PL</button>
+    <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
+  </div>
+</div>
+
+<!-- Step tabs -->
+<div class="step-tabs" id="step-tabs">
+  <button class="step-tab active" data-step="0" onclick="goStep(0)">
+    <span class="step-num">①</span><span class="step-text">You</span>
+  </button>
+  <button class="step-tab" data-step="1" onclick="goStep(1)">
+    <span class="step-num">②</span><span class="step-text">Children</span>
+  </button>
+  <button class="step-tab" data-step="2" onclick="goStep(2)">
+    <span class="step-num">③</span><span class="step-text">Parents</span>
+  </button>
+  <button class="step-tab" data-step="3" onclick="goStep(3)">
+    <span class="step-num">④</span><span class="step-text">Grandparents</span>
+  </button>
+  <button class="step-tab" data-step="4" onclick="goStep(4)">
+    <span class="step-num">⑤</span><span class="step-text">Great-grandparents</span>
+  </button>
+  <button class="step-tab" data-step="5" onclick="goStep(5)">
+    <span class="step-num">⑥</span><span class="step-text">Save</span>
+  </button>
+</div>
+
+<!-- ── STEP 0: YOU ──────────────────────────────────────────────── -->
+<div class="step-body active" id="step-0">
+  <div class="step-title">You — the focus of the tree</div>
+  <div class="person-card">
+    <div class="card-label">Your details</div>
+    <div class="field-row">
+      <div class="field-group"><label>First Name *</label><input type="text" id="you-fn" placeholder="e.g. María"></div>
+      <div class="field-group"><label>Last Name</label><input type="text" id="you-ln" placeholder="e.g. García"></div>
+    </div>
+    <div class="field-row three">
+      <div class="field-group"><label>Birth Year</label><input type="text" id="you-b" placeholder="1985"></div>
+      <div class="field-group"><label>Birth Place</label><input type="text" id="you-bp" placeholder="Madrid"></div>
+      <div class="field-group"><label id="you-gender-label">Gender</label>
+        <div class="gender-row">
+          <label><input type="radio" name="you-g" value="M" checked> Male</label>
+          <label><input type="radio" name="you-g" value="F"> Female</label>
+        </div>
+      </div>
+    </div>
+    <div class="field-row full">
+      <div class="field-group"><label>Short biography (optional)</label>
+        <textarea id="you-bio" placeholder="A few words about your life…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div id="spouses-container"></div>
+  <button class="add-btn" onclick="addSpouse()"><span style="font-size:16px;line-height:1">+</span> Add Spouse / Partner</button>
+
+  <div style="margin-top:24px">
+    <div class="field-group" style="max-width:340px">
+      <label>Tree name (optional)</label>
+      <input type="text" id="meta-name" placeholder="e.g. García-López Family Tree">
+    </div>
+  </div>
+</div>
+
+<!-- ── STEP 1: CHILDREN ─────────────────────────────────────────── -->
+<div class="step-body" id="step-1">
+  <div class="step-title">Your Children</div>
+  <p class="section-label">Add as many children as you like. Leave blank to skip this generation.</p>
+  <div id="children-container"></div>
+  <button class="add-btn" onclick="addChild()"><span style="font-size:16px;line-height:1">+</span> Add Child</button>
+</div>
+
+<!-- ── STEP 2: PARENTS ──────────────────────────────────────────── -->
+<div class="step-body" id="step-2">
+  <div class="step-title">Your Parents</div>
+  <div class="person-card">
+    <div class="card-label">Father</div>
+    <div class="field-row">
+      <div class="field-group"><label>First Name</label><input type="text" id="pf-fn" placeholder="e.g. Juan"></div>
+      <div class="field-group"><label>Last Name</label><input type="text" id="pf-ln" placeholder="e.g. García"></div>
+    </div>
+    <div class="field-row three">
+      <div class="field-group"><label>Birth Year</label><input type="text" id="pf-b" placeholder="1955"></div>
+      <div class="field-group"><label>Death Year</label><input type="text" id="pf-d" placeholder="optional"></div>
+      <div class="field-group"><label>Birth Place</label><input type="text" id="pf-bp" placeholder="city"></div>
+    </div>
+  </div>
+  <div class="person-card">
+    <div class="card-label">Mother</div>
+    <div class="field-row">
+      <div class="field-group"><label>First Name</label><input type="text" id="pm-fn" placeholder="e.g. Ana"></div>
+      <div class="field-group"><label>Last Name (maiden)</label><input type="text" id="pm-ln" placeholder="e.g. López"></div>
+    </div>
+    <div class="field-row three">
+      <div class="field-group"><label>Birth Year</label><input type="text" id="pm-b" placeholder="1957"></div>
+      <div class="field-group"><label>Death Year</label><input type="text" id="pm-d" placeholder="optional"></div>
+      <div class="field-group"><label>Birth Place</label><input type="text" id="pm-bp" placeholder="city"></div>
+    </div>
+  </div>
+  <p class="section-label" style="margin-top:18px">Siblings (same parents)</p>
+  <div id="siblings-container"></div>
+  <button class="add-btn" onclick="addSibling()"><span style="font-size:16px;line-height:1">+</span> Add Sibling</button>
+</div>
+
+<!-- ── STEP 3: GRANDPARENTS ─────────────────────────────────────── -->
+<div class="step-body" id="step-3">
+  <div class="step-title">Grandparents</div>
+  <p class="section-label">Father's side</p>
+  <div class="person-card">
+    <div class="card-label">Paternal Grandfather</div>
+    <div class="field-row">
+      <div class="field-group"><label>First Name</label><input type="text" id="gpff-fn" placeholder="e.g. Pedro"></div>
+      <div class="field-group"><label>Last Name</label><input type="text" id="gpff-ln" placeholder="e.g. García"></div>
+    </div>
+    <div class="field-row three">
+      <div class="field-group"><label>Birth Year</label><input type="text" id="gpff-b" placeholder="1925"></div>
+      <div class="field-group"><label>Death Year</label><input type="text" id="gpff-d" placeholder=""></div>
+      <div class="field-group"><label>Birth Place</label><input type="text" id="gpff-bp" placeholder="city"></div>
+    </div>
+  </div>
+  <div class="person-card">
+    <div class="card-label">Paternal Grandmother</div>
+    <div class="field-row">
+      <div class="field-group"><label>First Name</label><input type="text" id="gpfm-fn" placeholder="e.g. Carmen"></div>
+      <div class="field-group"><label>Last Name (maiden)</label><input type="text" id="gpfm-ln" placeholder="e.g. Martínez"></div>
+    </div>
+    <div class="field-row three">
+      <div class="field-group"><label>Birth Year</label><input type="text" id="gpfm-b" placeholder="1928"></div>
+      <div class="field-group"><label>Death Year</label><input type="text" id="gpfm-d" placeholder=""></div>
+      <div class="field-group"><label>Birth Place</label><input type="text" id="gpfm-bp" placeholder="city"></div>
+    </div>
+  </div>
+  <p class="section-label" style="margin-top:18px">Mother's side</p>
+  <div class="person-card">
+    <div class="card-label">Maternal Grandfather</div>
+    <div class="field-row">
+      <div class="field-group"><label>First Name</label><input type="text" id="gpmf-fn" placeholder="e.g. Antonio"></div>
+      <div class="field-group"><label>Last Name</label><input type="text" id="gpmf-ln" placeholder="e.g. López"></div>
+    </div>
+    <div class="field-row three">
+      <div class="field-group"><label>Birth Year</label><input type="text" id="gpmf-b" placeholder="1923"></div>
+      <div class="field-group"><label>Death Year</label><input type="text" id="gpmf-d" placeholder=""></div>
+      <div class="field-group"><label>Birth Place</label><input type="text" id="gpmf-bp" placeholder="city"></div>
+    </div>
+  </div>
+  <div class="person-card">
+    <div class="card-label">Maternal Grandmother</div>
+    <div class="field-row">
+      <div class="field-group"><label>First Name</label><input type="text" id="gpmm-fn" placeholder="e.g. Dolores"></div>
+      <div class="field-group"><label>Last Name (maiden)</label><input type="text" id="gpmm-ln" placeholder="e.g. Sánchez"></div>
+    </div>
+    <div class="field-row three">
+      <div class="field-group"><label>Birth Year</label><input type="text" id="gpmm-b" placeholder="1926"></div>
+      <div class="field-group"><label>Death Year</label><input type="text" id="gpmm-d" placeholder=""></div>
+      <div class="field-group"><label>Birth Place</label><input type="text" id="gpmm-bp" placeholder="city"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── STEP 4: GREAT-GRANDPARENTS ──────────────────────────────── -->
+<div class="step-body" id="step-4">
+  <div class="step-title">Great-Grandparents</div>
+  <p class="section-label">Fill in what you know — blank fields are simply skipped.</p>
+  <div id="ggp-container"></div>
+</div>
+
+<!-- ── STEP 5: SAVE & LAUNCH ─────────────────────────────────────── -->
+<div class="step-body" id="step-5">
+  <div class="step-title">Save & Launch Your Tree</div>
+  <p class="section-label" style="margin-bottom:20px">
+    Save your tree to create your personal diamond on the home page.
+  </p>
+  <div class="save-card">
+    <div class="save-tree-name" id="save-tree-name">Your Family Tree</div>
+    <div class="save-tree-meta" id="save-tree-meta"></div>
+    <button class="btn-save-big" id="save-btn" onclick="saveAndLaunch()">
+      <span class="dl-icon">↓</span> Save My Tree
+    </button>
+    <div class="save-confirm" id="save-confirm">
+      <div class="save-confirm-msg">
+        ✓ <strong id="save-confirm-name"></strong> — <span id="save-conf-sub">saved. Your diamond is ready on the home page.</span>
+      </div>
+      <button class="btn-nav btn-view" id="save-view-btn" onclick="viewSavedTree()" style="display:inline-block; padding:11px 28px;">▶ View My Tree</button>
+    </div>
+  </div>
+  <div class="save-note" id="save-note-el">
+    A <code>.js</code> backup file has been downloaded to your computer.<br>
+    Place it in the <em>ROYAL FAMILY</em> folder to keep the tree permanently
+    accessible even if browser storage is cleared.
+  </div>
+</div>
+
+<!-- Nav bar -->
+<div class="nav-bar">
+  <div class="nav-left">
+    <button class="btn-nav btn-prev" id="btn-prev" onclick="prevStep()" style="display:none">← Back</button>
+  </div>
+  <div class="nav-step-info" id="nav-step-info">Step 1 of 5</div>
+  <div class="nav-right">
+    <button class="btn-nav btn-next" id="btn-next" onclick="nextStep()">Next →</button>
+  </div>
+</div>
+
+<a id="back-btn" href="index.html">← Chronica Originum</a>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   I18N
+══════════════════════════════════════════════════════════════════ */
+let currentLang = 'en';
+
+const COPY_FORM = {
+  en: {
+    pageTitle:'Build Your Family Tree',
+    pageSub:'Fill in generation by generation · your data stays in your browser',
+    tabs:['You','Children','Parents','Grandparents','Great-grandparents','Save'],
+    step0title:'You — the focus of the tree', yourDetails:'Your details',
+    fn:'First Name', fnReq:'First Name *', ln:'Last Name',
+    by:'Birth Year', bp:'Birth Place', dy:'Death Year',
+    gender:'Gender', male:'Male', female:'Female',
+    bio:'Short biography (optional)', treeName:'Tree name (optional)',
+    addSpouse:'Add Spouse / Partner', spouseLabel:'Spouse / Partner',
+    step1title:'Your Children',
+    step1sub:'Add as many children as you like. Leave blank to skip this generation.',
+    addChild:'Add Child', childLabel:'Child',
+    step2title:'Your Parents', father:'Father', mother:'Mother',
+    maidenLn:'Last Name (maiden)', siblingsLabel:'Siblings (same parents)',
+    addSibling:'Add Sibling', siblingLabel:'Sibling',
+    step3title:'Grandparents', fatherSide:"Father's side", motherSide:"Mother's side",
+    pgf:'Paternal Grandfather', pgm:'Paternal Grandmother',
+    mgf:'Maternal Grandfather', mgm:'Maternal Grandmother',
+    step4title:'Great-Grandparents',
+    step4sub:'Fill in what you know — blank fields are simply skipped.',
+    ggpLabels:["Paternal great-grandfather (father's father's father)","Paternal great-grandmother (father's father's mother)","Paternal great-grandfather (father's mother's father)","Paternal great-grandmother (father's mother's mother)","Maternal great-grandfather (mother's father's father)","Maternal great-grandmother (mother's father's mother)","Maternal great-grandfather (mother's mother's father)","Maternal great-grandmother (mother's mother's mother)"],
+    saveTitle:'Save & Launch Your Tree', saveSub:'Save your tree to create your personal diamond on the home page.',
+    saveBtn:'Save My Tree', savedSub:'saved · your diamond is ready on the home page.',
+    viewBtn:'▶ View My Tree',
+    saveNote:'A <code>.js</code> backup file has been downloaded to your computer.<br>Place it in the <em>ROYAL FAMILY</em> folder to keep the tree permanently accessible even if browser storage is cleared.',
+    back:'← Back', next:'Next →', finish:'Finish →', saveStep:'Save & Launch',
+    stepOf:(n,t)=>`Step ${n} of ${t}`, optional:'optional', city:'city',
+  },
+  pl: {
+    pageTitle:'Zbuduj swoje drzewo genealogiczne',
+    pageSub:'Uzupełnij pokolenie po pokoleniu · dane zostają w przeglądarce',
+    tabs:['Ty','Dzieci','Rodzice','Dziadkowie','Pradziadkowie','Zapisz'],
+    step0title:'Ty — centrum drzewa', yourDetails:'Twoje dane',
+    fn:'Imię', fnReq:'Imię *', ln:'Nazwisko',
+    by:'Rok urodzenia', bp:'Miejsce urodzenia', dy:'Rok śmierci',
+    gender:'Płeć', male:'M', female:'K',
+    bio:'Krótka biografia (opcjonalnie)', treeName:'Nazwa drzewa (opcjonalnie)',
+    addSpouse:'Dodaj małżonka / partnera', spouseLabel:'Małżonek / Partner',
+    step1title:'Twoje Dzieci',
+    step1sub:'Dodaj tyle dzieci ile chcesz. Puste pola zostaną pominięte.',
+    addChild:'Dodaj dziecko', childLabel:'Dziecko',
+    step2title:'Twoi Rodzice', father:'Ojciec', mother:'Matka',
+    maidenLn:'Nazwisko panieńskie', siblingsLabel:'Rodzeństwo (ci sami rodzice)',
+    addSibling:'Dodaj rodzeństwo', siblingLabel:'Rodzeństwo',
+    step3title:'Dziadkowie', fatherSide:'Ze strony ojca', motherSide:'Ze strony matki',
+    pgf:'Dziadek ojczysty', pgm:'Babcia ojczysta',
+    mgf:'Dziadek macierzysty', mgm:'Babcia macierzysta',
+    step4title:'Pradziadkowie',
+    step4sub:'Wpisz to, co wiesz — puste pola zostaną pominięte.',
+    ggpLabels:['Pradziadek (ojciec ojca twojego ojca)','Prababcia (matka ojca twojego ojca)','Pradziadek (ojciec matki twojego ojca)','Prababcia (matka matki twojego ojca)','Pradziadek (ojciec ojca twojej matki)','Prababcia (matka ojca twojej matki)','Pradziadek (ojciec matki twojej matki)','Prababcia (matka matki twojej matki)'],
+    saveTitle:'Zapisz i otwórz drzewo', saveSub:'Zapisz drzewo, aby stworzyć swój diament na stronie głównej.',
+    saveBtn:'Zapisz drzewo', savedSub:'zapisane · twój diament jest gotowy na stronie głównej.',
+    viewBtn:'▶ Otwórz drzewo',
+    saveNote:'Plik <code>.js</code> został pobrany na twój komputer.<br>Umieść go w folderze <em>ROYAL FAMILY</em>, aby drzewo było dostępne na stałe.',
+    back:'← Wróć', next:'Dalej →', finish:'Zakończ →', saveStep:'Zapisz i uruchom',
+    stepOf:(n,t)=>`Krok ${n} z ${t}`, optional:'opcjonalnie', city:'miasto',
+  },
+  es: {
+    pageTitle:'Construye tu árbol genealógico',
+    pageSub:'Completa generación a generación · tus datos se guardan en el navegador',
+    tabs:['Tú','Hijos','Padres','Abuelos','Bisabuelos','Guardar'],
+    step0title:'Tú — el centro del árbol', yourDetails:'Tus datos',
+    fn:'Nombre', fnReq:'Nombre *', ln:'Apellido',
+    by:'Año de nacimiento', bp:'Lugar de nacimiento', dy:'Año de fallecimiento',
+    gender:'Género', male:'H', female:'M',
+    bio:'Breve biografía (opcional)', treeName:'Nombre del árbol (opcional)',
+    addSpouse:'Añadir cónyuge / pareja', spouseLabel:'Cónyuge / Pareja',
+    step1title:'Tus Hijos',
+    step1sub:'Añade todos los hijos que quieras. Los campos vacíos se omiten.',
+    addChild:'Añadir hijo', childLabel:'Hijo',
+    step2title:'Tus Padres', father:'Padre', mother:'Madre',
+    maidenLn:'Apellido de soltera', siblingsLabel:'Hermanos (mismos padres)',
+    addSibling:'Añadir hermano', siblingLabel:'Hermano',
+    step3title:'Abuelos', fatherSide:'Por parte del padre', motherSide:'Por parte de la madre',
+    pgf:'Abuelo paterno', pgm:'Abuela paterna',
+    mgf:'Abuelo materno', mgm:'Abuela materna',
+    step4title:'Bisabuelos',
+    step4sub:'Rellena lo que sepas — los campos vacíos se omiten.',
+    ggpLabels:['Bisabuelo paterno (padre del padre de tu padre)','Bisabuela paterna (madre del padre de tu padre)','Bisabuelo paterno (padre de la madre de tu padre)','Bisabuela paterna (madre de la madre de tu padre)','Bisabuelo materno (padre del padre de tu madre)','Bisabuela materna (madre del padre de tu madre)','Bisabuelo materno (padre de la madre de tu madre)','Bisabuela materna (madre de la madre de tu madre)'],
+    saveTitle:'Guardar y ver tu árbol', saveSub:'Guarda tu árbol para crear tu diamante en la página principal.',
+    saveBtn:'Guardar mi árbol', savedSub:'guardado · tu diamante está listo en la página principal.',
+    viewBtn:'▶ Ver mi árbol',
+    saveNote:'Se ha descargado un archivo de copia de seguridad <code>.js</code>.<br>Colócalo en la carpeta <em>ROYAL FAMILY</em> para mantener el árbol accesible permanentemente.',
+    back:'← Atrás', next:'Siguiente →', finish:'Finalizar →', saveStep:'Guardar y lanzar',
+    stepOf:(n,t)=>`Paso ${n} de ${t}`, optional:'opcional', city:'ciudad',
+  }
+};
+
+function _q(sel) { return document.querySelector(sel); }
+function _ql(sel) { return document.querySelectorAll(sel); }
+function _setText(sel, txt) {
+  const el = typeof sel === 'string' ? _q(sel) : sel;
+  if (el && txt !== undefined) el.textContent = txt;
+}
+function _setInputLabel(inputId, txt) {
+  const el = document.getElementById(inputId);
+  if (!el || !txt) return;
+  const lbl = el.closest('.field-group')?.querySelector('label');
+  if (lbl) lbl.textContent = txt;
+}
+function _setAddBtn(sel, txt) {
+  const btn = _q(sel);
+  if (!btn) return;
+  const icon = btn.querySelector('span');
+  btn.textContent = '';
+  if (icon) btn.appendChild(icon);
+  btn.appendChild(document.createTextNode(' ' + txt));
+}
+
+function setLang(l) {
+  if (!COPY_FORM[l]) return;
+  currentLang = l;
+  try { localStorage.setItem('form-lang', l); } catch(e) {}
+  document.documentElement.lang = l;
+  const t = COPY_FORM[l];
+
+  _ql('#form-lang-switch .lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+  document.getElementById('form-page-title').textContent = t.pageTitle;
+  document.getElementById('form-page-sub').textContent   = t.pageSub;
+  _ql('.step-text').forEach((el, i) => el.textContent = t.tabs[i]);
+
+  // Step titles
+  const titles = _ql('.step-title');
+  [t.step0title,t.step1title,t.step2title,t.step3title,t.step4title,t.saveTitle]
+    .forEach((txt, i) => { if (titles[i]) titles[i].textContent = txt; });
+
+  // Step 0
+  _setText('#step-0 .card-label', t.yourDetails);
+  _setInputLabel('you-fn', t.fnReq); _setInputLabel('you-ln', t.ln);
+  _setInputLabel('you-b',  t.by);    _setInputLabel('you-bp', t.bp);
+  document.getElementById('you-gender-label').textContent = t.gender;
+  _setInputLabel('you-bio', t.bio);
+  const youR = _ql('input[name="you-g"]');
+  if (youR[0]) youR[0].closest('label').lastChild.textContent = ' ' + t.male;
+  if (youR[1]) youR[1].closest('label').lastChild.textContent = ' ' + t.female;
+  _setAddBtn('#step-0 .add-btn', t.addSpouse);
+  _setInputLabel('meta-name', t.treeName);
+
+  // Step 1
+  _setText('#step-1 .section-label', t.step1sub);
+  _setAddBtn('#step-1 .add-btn', t.addChild);
+
+  // Step 2
+  const s2cl = _ql('#step-2 .card-label');
+  if (s2cl[0]) s2cl[0].textContent = t.father;
+  if (s2cl[1]) s2cl[1].textContent = t.mother;
+  ['pf-fn','pf-ln','pf-b','pf-d','pf-bp'].forEach((id,i) =>
+    _setInputLabel(id,[t.fn,t.ln,t.by,t.dy,t.bp][i]));
+  ['pm-fn','pm-ln','pm-b','pm-d','pm-bp'].forEach((id,i) =>
+    _setInputLabel(id,[t.fn,t.maidenLn,t.by,t.dy,t.bp][i]));
+  _setText('#step-2 .section-label', t.siblingsLabel);
+  _setAddBtn('#step-2 .add-btn', t.addSibling);
+
+  // Step 3
+  const s3sl = _ql('#step-3 .section-label');
+  if (s3sl[0]) s3sl[0].textContent = t.fatherSide;
+  if (s3sl[1]) s3sl[1].textContent = t.motherSide;
+  const s3cl = _ql('#step-3 .card-label');
+  [t.pgf,t.pgm,t.mgf,t.mgm].forEach((txt,i) => { if (s3cl[i]) s3cl[i].textContent = txt; });
+  ['gpff','gpmf'].forEach(p => {
+    _setInputLabel(p+'-fn',t.fn); _setInputLabel(p+'-ln',t.ln);
+    _setInputLabel(p+'-b',t.by);  _setInputLabel(p+'-d',t.dy); _setInputLabel(p+'-bp',t.bp);
+  });
+  ['gpfm','gpmm'].forEach(p => {
+    _setInputLabel(p+'-fn',t.fn); _setInputLabel(p+'-ln',t.maidenLn);
+    _setInputLabel(p+'-b',t.by);  _setInputLabel(p+'-d',t.dy); _setInputLabel(p+'-bp',t.bp);
+  });
+
+  // Step 4 - re-render GGP preserving values
+  renderGGP();
+
+  // Step 5 Save
+  _setText('#step-5 .section-label', t.saveSub);
+  const saveBtn = document.getElementById('save-btn');
+  if (saveBtn) saveBtn.innerHTML = `<span class="dl-icon">↓</span> ${t.saveBtn}`;
+  _setText('#save-conf-sub',  t.savedSub);
+  _setText('#save-view-btn',  t.viewBtn);
+  const sn = document.getElementById('save-note-el');
+  if (sn) sn.innerHTML = t.saveNote;
+
+  // Nav
+  _setText('#btn-prev', t.back);
+  const btnNext = document.getElementById('btn-next');
+  if (btnNext) btnNext.textContent = currentStep === TOTAL - 2 ? t.finish : t.next;
+  const isSave = currentStep === TOTAL - 1;
+  document.getElementById('nav-step-info').textContent = isSave ? t.saveStep : t.stepOf(currentStep + 1, TOTAL - 1);
+
+  // Update already-added dynamic cards
+  _ql('[id^="card-spouse-"]').forEach((card, i) => {
+    _setText(card.querySelector('.card-label'), `${t.spouseLabel} ${i+1}`);
+    const ll = card.querySelectorAll('.field-group > label');
+    [t.fn,t.ln,t.by,t.bp,t.gender].forEach((txt,i) => { if(ll[i]) ll[i].textContent = txt; });
+    const rr = card.querySelectorAll(`input[name="sp${i}-g"]`);
+    if(rr[0]) rr[0].closest('label').lastChild.textContent = ' '+t.male;
+    if(rr[1]) rr[1].closest('label').lastChild.textContent = ' '+t.female;
+  });
+  _ql('[id^="card-child-"]').forEach((card, i) => {
+    _setText(card.querySelector('.card-label'), `${t.childLabel} ${i+1}`);
+    const ll = card.querySelectorAll('.field-group > label');
+    [t.fn,t.ln,t.by,t.bp,t.gender].forEach((txt,i) => { if(ll[i]) ll[i].textContent = txt; });
+    const rr = card.querySelectorAll(`input[name="ch${i}-g"]`);
+    if(rr[0]) rr[0].closest('label').lastChild.textContent = ' '+t.male;
+    if(rr[1]) rr[1].closest('label').lastChild.textContent = ' '+t.female;
+  });
+  _ql('[id^="card-sib-"]').forEach((card, i) => {
+    _setText(card.querySelector('.card-label'), `${t.siblingLabel} ${i+1}`);
+    const ll = card.querySelectorAll('.field-group > label');
+    [t.fn,t.ln,t.by,t.bp,t.gender].forEach((txt,i) => { if(ll[i]) ll[i].textContent = txt; });
+    const rr = card.querySelectorAll(`input[name="sib${i}-g"]`);
+    if(rr[0]) rr[0].closest('label').lastChild.textContent = ' '+t.male;
+    if(rr[1]) rr[1].closest('label').lastChild.textContent = ' '+t.female;
+  });
+}
+
+function renderGGP() {
+  const t = COPY_FORM[currentLang];
+  const c = document.getElementById('ggp-container');
+  // Preserve any values already typed
+  const saved = {};
+  GGP_DEFS.forEach(({id}) => {
+    ['fn','ln','b','d','bp'].forEach(f => {
+      const el = document.getElementById(`${id}-${f}`);
+      if (el) saved[`${id}-${f}`] = el.value;
+    });
+  });
+  c.innerHTML = '';
+  GGP_DEFS.forEach(({id}, idx) => {
+    const div = document.createElement('div');
+    div.className = 'person-card';
+    div.innerHTML = `
+      <div class="card-label">${t.ggpLabels[idx]}</div>
+      <div class="field-row">
+        <div class="field-group"><label>${t.fn}</label><input type="text" id="${id}-fn" value="${saved[id+'-fn']||''}"></div>
+        <div class="field-group"><label>${t.ln}</label><input type="text" id="${id}-ln" value="${saved[id+'-ln']||''}"></div>
+      </div>
+      <div class="field-row three">
+        <div class="field-group"><label>${t.by}</label><input type="text" id="${id}-b" placeholder="~1895" value="${saved[id+'-b']||''}"></div>
+        <div class="field-group"><label>${t.dy}</label><input type="text" id="${id}-d" value="${saved[id+'-d']||''}"></div>
+        <div class="field-group"><label>${t.bp}</label><input type="text" id="${id}-bp" placeholder="${t.city}" value="${saved[id+'-bp']||''}"></div>
+      </div>`;
+    c.appendChild(div);
+  });
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   STEP NAVIGATION
+══════════════════════════════════════════════════════════════════ */
+const TOTAL = 6;
+let currentStep = 0;
+
+function goStep(n) {
+  document.querySelectorAll('.step-body').forEach((el, i) => el.classList.toggle('active', i === n));
+  document.querySelectorAll('.step-tab').forEach((el, i) => {
+    el.classList.toggle('active', i === n);
+    el.classList.toggle('done', i < n);
+  });
+  document.getElementById('btn-prev').style.display = n > 0 ? '' : 'none';
+  const isSaveStep = n === TOTAL - 1;
+  const t = COPY_FORM[currentLang];
+  const btnNext = document.getElementById('btn-next');
+  btnNext.style.display = isSaveStep ? 'none' : '';
+  btnNext.textContent = n === TOTAL - 2 ? t.finish : t.next;
+  document.getElementById('nav-step-info').textContent = isSaveStep ? t.saveStep : t.stepOf(n + 1, TOTAL - 1);
+  currentStep = n;
+  window.scrollTo(0, 0);
+  if (isSaveStep) updateSaveSummary();
+}
+function nextStep() { if (currentStep < TOTAL - 1) goStep(currentStep + 1); }
+function prevStep() { if (currentStep > 0) goStep(currentStep - 1); }
+
+/* ══════════════════════════════════════════════════════════════════
+   DYNAMIC CARDS
+══════════════════════════════════════════════════════════════════ */
+let spouseCount = 0, childCount = 0, siblingCount = 0;
+
+function addSpouse() {
+  const idx = spouseCount++;
+  const t = COPY_FORM[currentLang];
+  const div = document.createElement('div');
+  div.className = 'person-card'; div.id = `card-spouse-${idx}`;
+  div.innerHTML = `
+    <div class="card-label">${t.spouseLabel} ${idx + 1}</div>
+    <button class="remove-btn" onclick="this.closest('.person-card').remove()">×</button>
+    <div class="field-row">
+      <div class="field-group"><label>${t.fn}</label><input type="text" id="sp${idx}-fn"></div>
+      <div class="field-group"><label>${t.ln}</label><input type="text" id="sp${idx}-ln"></div>
+    </div>
+    <div class="field-row three">
+      <div class="field-group"><label>${t.by}</label><input type="text" id="sp${idx}-b" placeholder="1983"></div>
+      <div class="field-group"><label>${t.bp}</label><input type="text" id="sp${idx}-bp" placeholder="${t.city}"></div>
+      <div class="field-group"><label>${t.gender}</label>
+        <div class="gender-row">
+          <label><input type="radio" name="sp${idx}-g" value="M" checked> ${t.male}</label>
+          <label><input type="radio" name="sp${idx}-g" value="F"> ${t.female}</label>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('spouses-container').appendChild(div);
+}
+
+function addChild() {
+  const idx = childCount++;
+  const t = COPY_FORM[currentLang];
+  const div = document.createElement('div');
+  div.className = 'person-card'; div.id = `card-child-${idx}`;
+  div.innerHTML = `
+    <div class="card-label">${t.childLabel} ${idx + 1}</div>
+    <button class="remove-btn" onclick="this.closest('.person-card').remove()">×</button>
+    <div class="field-row">
+      <div class="field-group"><label>${t.fn}</label><input type="text" id="ch${idx}-fn"></div>
+      <div class="field-group"><label>${t.ln}</label><input type="text" id="ch${idx}-ln"></div>
+    </div>
+    <div class="field-row three">
+      <div class="field-group"><label>${t.by}</label><input type="text" id="ch${idx}-b" placeholder="2010"></div>
+      <div class="field-group"><label>${t.bp}</label><input type="text" id="ch${idx}-bp" placeholder="${t.city}"></div>
+      <div class="field-group"><label>${t.gender}</label>
+        <div class="gender-row">
+          <label><input type="radio" name="ch${idx}-g" value="M" checked> ${t.male}</label>
+          <label><input type="radio" name="ch${idx}-g" value="F"> ${t.female}</label>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('children-container').appendChild(div);
+}
+
+function addSibling() {
+  const idx = siblingCount++;
+  const t = COPY_FORM[currentLang];
+  const div = document.createElement('div');
+  div.className = 'person-card'; div.id = `card-sib-${idx}`;
+  div.innerHTML = `
+    <div class="card-label">${t.siblingLabel} ${idx + 1}</div>
+    <button class="remove-btn" onclick="this.closest('.person-card').remove()">×</button>
+    <div class="field-row">
+      <div class="field-group"><label>${t.fn}</label><input type="text" id="sib${idx}-fn"></div>
+      <div class="field-group"><label>${t.ln}</label><input type="text" id="sib${idx}-ln"></div>
+    </div>
+    <div class="field-row three">
+      <div class="field-group"><label>${t.by}</label><input type="text" id="sib${idx}-b" placeholder="1988"></div>
+      <div class="field-group"><label>${t.bp}</label><input type="text" id="sib${idx}-bp" placeholder="${t.city}"></div>
+      <div class="field-group"><label>${t.gender}</label>
+        <div class="gender-row">
+          <label><input type="radio" name="sib${idx}-g" value="M" checked> ${t.male}</label>
+          <label><input type="radio" name="sib${idx}-g" value="F"> ${t.female}</label>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('siblings-container').appendChild(div);
+}
+
+/* Great-grandparents static cards */
+const GGP_DEFS = [
+  { id:'ggpff',  label:"Paternal great-grandfather (father's father's father)", g:'M' },
+  { id:'ggpfm',  label:"Paternal great-grandmother (father's father's mother)", g:'F' },
+  { id:'ggpmf',  label:"Paternal great-grandfather (father's mother's father)", g:'M' },
+  { id:'ggpmm',  label:"Paternal great-grandmother (father's mother's mother)", g:'F' },
+  { id:'ggpmff', label:"Maternal great-grandfather (mother's father's father)", g:'M' },
+  { id:'ggpmfm', label:"Maternal great-grandmother (mother's father's mother)", g:'F' },
+  { id:'ggpmmf', label:"Maternal great-grandfather (mother's mother's father)", g:'M' },
+  { id:'ggpmmm', label:"Maternal great-grandmother (mother's mother's mother)", g:'F' },
+];
+renderGGP();
+
+/* ══════════════════════════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════════════════════════ */
+function val(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function radio(name) { const el = document.querySelector(`input[name="${name}"]:checked`); return el ? el.value : 'M'; }
+function slug(fn, ln, suffix) {
+  return ((fn + '_' + (ln||'') + (suffix ? '_' + suffix : ''))
+    .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[^a-z0-9_]/g,'_').replace(/_+/g,'_').replace(/^_|_$/g,'') || suffix || 'person');
+}
+function mkPerson(id, fn, ln, g, b, d, bp, parents, spouses) {
+  if (!fn) return null;
+  const o = { id, fn, ln: ln||'', g: g||'M', b: b||'', bp: bp||'', p: parents||[], s: spouses||[], image: null };
+  if (d) o.d = d;
+  return o;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   BUILD DATA
+══════════════════════════════════════════════════════════════════ */
+function buildData() {
+  const people = [], succession = [];
+
+  // Great-grandparents
+  const ggpMap = {};
+  GGP_DEFS.forEach(({id, g}) => {
+    const fn = val(id+'-fn'); if (!fn) return;
+    const pid = slug(fn, val(id+'-ln'), id);
+    const p = mkPerson(pid, fn, val(id+'-ln'), g, val(id+'-b'), val(id+'-d'), val(id+'-bp'), [], []);
+    if (p) { people.push(p); ggpMap[id] = pid; }
+  });
+
+  // Grandparents
+  const gpDefs = [
+    { id:'gpff', g:'M', pKeys:['ggpff','ggpfm'], spKey:'gpfm' },
+    { id:'gpfm', g:'F', pKeys:['ggpmf','ggpmm'], spKey:'gpff' },
+    { id:'gpmf', g:'M', pKeys:['ggpmff','ggpmfm'], spKey:'gpmm' },
+    { id:'gpmm', g:'F', pKeys:['ggpmmf','ggpmmm'], spKey:'gpmf' },
+  ];
+  const gpMap = {};
+  gpDefs.forEach(({id, g, pKeys}) => {
+    const fn = val(id+'-fn'); if (!fn) return;
+    const pid = slug(fn, val(id+'-ln'), id);
+    const parentIds = pKeys.map(k => ggpMap[k]).filter(Boolean);
+    const p = mkPerson(pid, fn, val(id+'-ln'), g, val(id+'-b'), val(id+'-d'), val(id+'-bp'), parentIds, []);
+    if (p) { people.push(p); gpMap[id] = pid; }
+  });
+  if (gpMap.gpff && gpMap.gpfm) { people.find(p=>p.id===gpMap.gpff).s.push(gpMap.gpfm); people.find(p=>p.id===gpMap.gpfm).s.push(gpMap.gpff); }
+  if (gpMap.gpmf && gpMap.gpmm) { people.find(p=>p.id===gpMap.gpmf).s.push(gpMap.gpmm); people.find(p=>p.id===gpMap.gpmm).s.push(gpMap.gpmf); }
+
+  // Parents
+  let pfId = null, pmId = null;
+  const pfFn = val('pf-fn'), pmFn = val('pm-fn');
+  if (pfFn) {
+    pfId = slug(pfFn, val('pf-ln'), 'father');
+    const p = mkPerson(pfId, pfFn, val('pf-ln'), 'M', val('pf-b'), val('pf-d'), val('pf-bp'), [gpMap.gpff, gpMap.gpfm].filter(Boolean), []);
+    if (p) { people.push(p); succession.push(pfId); }
+  }
+  if (pmFn) {
+    pmId = slug(pmFn, val('pm-ln'), 'mother');
+    const p = mkPerson(pmId, pmFn, val('pm-ln'), 'F', val('pm-b'), val('pm-d'), val('pm-bp'), [gpMap.gpmf, gpMap.gpmm].filter(Boolean), []);
+    if (p) { people.push(p); succession.push(pmId); }
+  }
+  if (pfId && pmId) {
+    const pf = people.find(p=>p.id===pfId); if (pf) pf.s.push(pmId);
+    const pm = people.find(p=>p.id===pmId); if (pm) pm.s.push(pfId);
+  }
+
+  // Siblings
+  document.querySelectorAll('[id^="card-sib-"]').forEach((_, i) => {
+    const fn = val(`sib${i}-fn`); if (!fn) return;
+    const sid = slug(fn, val(`sib${i}-ln`), 'sib'+i);
+    const p = mkPerson(sid, fn, val(`sib${i}-ln`), radio(`sib${i}-g`), val(`sib${i}-b`), '', val(`sib${i}-bp`), [pfId, pmId].filter(Boolean), []);
+    if (p) { people.push(p); succession.push(sid); }
+  });
+
+  // You
+  const youFn = val('you-fn') || 'You';
+  const youId = slug(youFn, val('you-ln'), 'you');
+  const youBio = val('you-bio');
+  const spIds = [];
+  document.querySelectorAll('[id^="card-spouse-"]').forEach((_, i) => {
+    const fn = val(`sp${i}-fn`); if (!fn) return;
+    const sid = slug(fn, val(`sp${i}-ln`), 'sp'+i);
+    const p = mkPerson(sid, fn, val(`sp${i}-ln`), radio(`sp${i}-g`), val(`sp${i}-b`), '', val(`sp${i}-bp`), [], [youId]);
+    if (p) { people.push(p); spIds.push(sid); }
+  });
+  const youP = mkPerson(youId, youFn, val('you-ln'), radio('you-g'), val('you-b'), '', val('you-bp'), [pfId, pmId].filter(Boolean), spIds);
+  if (youBio) youP.bio = { en: youBio, pl: youBio, es: youBio, fr: youBio };
+  people.push(youP);
+  succession.unshift(youId);
+
+  // Children
+  document.querySelectorAll('[id^="card-child-"]').forEach((_, i) => {
+    const fn = val(`ch${i}-fn`); if (!fn) return;
+    const cid = slug(fn, val(`ch${i}-ln`), 'child'+i);
+    const cp = mkPerson(cid, fn, val(`ch${i}-ln`), radio(`ch${i}-g`), val(`ch${i}-b`), '', val(`ch${i}-bp`), [youId, ...spIds.slice(0,1)], []);
+    if (cp) { people.push(cp); succession.push(cid); }
+  });
+
+  return {
+    familyName: val('meta-name') || `${youFn} Family Tree`,
+    defaultFocus: youId,
+    music: 'music/personal-1.mp3',
+    portraitFolder: 'portraits/personal',
+    noTimeline: true,
+    succession,
+    people: people.filter(Boolean),
+  };
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   ACTIONS
+══════════════════════════════════════════════════════════════════ */
+function _treeId() {
+  const fn = val('you-fn');
+  const label = val('meta-name') || fn + (val('you-ln') ? ' ' + val('you-ln') : '');
+  return {
+    label,
+    safeName: label.replace(/[^\wÀ-ɏЀ-ӿ]/g, '-').replace(/-+/g,'-').replace(/^-|-$/g,'') || fn,
+  };
+}
+
+function _registerTree(safeName, label, filename) {
+  try {
+    const key = 'arbor-saved-trees';
+    const trees = JSON.parse(localStorage.getItem(key) || '[]');
+    const idx = trees.findIndex(t => t.id === safeName);
+    const entry = { id: safeName, label, filename, icon: '🌿', color: '#5A3A6A', pw: null };
+    if (idx >= 0) trees[idx] = Object.assign(trees[idx], entry);
+    else trees.push(entry);
+    localStorage.setItem(key, JSON.stringify(trees));
+  } catch(e) {}
+}
+
+let _lastSafeName = '';
+let _lastEncodedData = '';
+
+function updateSaveSummary() {
+  const { label } = _treeId();
+  const displayName = label || 'Your Family Tree';
+  document.getElementById('save-tree-name').textContent = displayName;
+  const count = buildData().people.length;
+  document.getElementById('save-tree-meta').textContent =
+    `${count} ${count === 1 ? 'person' : 'people'} · ${new Date().toLocaleDateString()}`;
+  document.getElementById('save-confirm').style.display = 'none';
+  document.getElementById('save-btn').style.display = '';
+}
+
+function saveAndLaunch() {
+  const fn = val('you-fn');
+  if (!fn) { alert('Please fill in your first name in Step 1.'); goStep(0); return; }
+  const data = buildData();
+  const { label, safeName } = _treeId();
+  // Encode data in URL hash — the only truly origin-independent transfer mechanism
+  _lastEncodedData = encodeURIComponent(JSON.stringify(data));
+  // sessionStorage fallback (works when same file:// origin)
+  try { sessionStorage.setItem('eliadora_form_data', JSON.stringify(data)); } catch(e){}
+  try { localStorage.setItem('arbor-tree-data-' + safeName, JSON.stringify(data)); } catch(e){}
+  // Register the diamond
+  _registerTree(safeName, label, '_ls:' + safeName);
+  // Download JS backup file
+  const filename = 'eliadora-' + safeName;
+  const js = `// ${filename}.js — generated ${new Date().toLocaleDateString()}\n\nwindow.ELIADORA_DATA = ${JSON.stringify(data, null, 2)};\n`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([js], { type: 'text/javascript' }));
+  a.download = filename + '.js';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  // Store for view
+  _lastSafeName = safeName;
+  // Back-link: gem params in query string + tree data in hash (origin-safe)
+  const gemParams = new URLSearchParams({
+    gem_id: safeName, gem_label: label,
+    gem_file: '_ls:' + safeName, gem_icon: '🌿', gem_color: '#5A3A6A'
+  });
+  document.getElementById('back-btn').href = 'index.html?' + gemParams.toString() + '#td=' + _lastEncodedData;
+  // Show confirmation
+  document.getElementById('save-confirm-name').textContent = label;
+  document.getElementById('save-confirm').style.display = 'block';
+  document.getElementById('save-btn').style.display = 'none';
+}
+
+function viewSavedTree() {
+  // Open tree in new tab — data in hash is origin-independent
+  window.open('eliadora.html#td=' + _lastEncodedData, '_blank');
+  // Navigate this tab to index with gem params + data hash — registers the diamond
+  location.href = document.getElementById('back-btn').href;
+}
+
+// Init language
+(function() {
+  const saved = localStorage.getItem('form-lang');
+  setLang(saved && COPY_FORM[saved] ? saved : 'en');
+})();
+</script>
+</body>
+</html>

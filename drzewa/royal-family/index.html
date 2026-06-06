@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arbor Familiae</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --paper:       #F6EED9;
+  --paper-dark:  #EAE0C2;
+  --ink:         #1A1208;
+  --ink-soft:    #5A4830;
+  --gold:        #8B6914;
+  --gold-mid:    #C8A842;
+  --gold-pale:   #E8D898;
+  --c-personal:  #7A5C2E;
+  --c-create:    #3B6535;
+  --c-kings:     #8B1A2A;
+  --c-tolkien:   #174E1B;
+}
+
+html, body {
+  height: 100%; overflow: hidden;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  color: var(--ink);
+}
+
+/* ── Background ──────────────────────────────────────────────── */
+body {
+  background:
+    radial-gradient(ellipse at 50% 50%, #F0E6CA 0%, #D4C89A 100%);
+}
+
+/* Fine grain over everything */
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    repeating-linear-gradient(0deg,
+      rgba(100,70,10,.028) 0, rgba(100,70,10,.028) 1px,
+      transparent 1px, transparent 30px),
+    repeating-linear-gradient(90deg,
+      rgba(100,70,10,.018) 0, rgba(100,70,10,.018) 1px,
+      transparent 1px, transparent 30px);
+}
+
+/* Vignette */
+body::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(ellipse at 50% 50%,
+    transparent 50%, rgba(20,12,2,.28) 100%);
+}
+
+/* ── Cover wrapper ───────────────────────────────────────────── */
+.cover {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+  height: 100vh; padding: 1.2rem;
+}
+
+/* ── Book frame ──────────────────────────────────────────────── */
+.frame {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: space-between;
+  width: min(820px, 100%);
+  height: min(92vh, 680px);
+  padding: 2.4rem 3.2rem 2rem;
+  background: var(--paper);
+  /* Multi-layer border: gold line, gap, thin pale line */
+  box-shadow:
+    0 0 0 1.5px var(--gold),
+    0 0 0 5px var(--paper),
+    0 0 0 6.5px rgba(200,168,66,.4),
+    0 0 0 8px var(--paper),
+    0 0 0 8.5px rgba(200,168,66,.15),
+    0 8px 60px rgba(20,12,2,.28),
+    0 2px 10px rgba(0,0,0,.12);
+}
+
+/* Inner hairline border */
+.frame::after {
+  content: ''; position: absolute; inset: 12px;
+  border: 0.5px solid rgba(180,140,50,.3);
+  pointer-events: none;
+}
+
+/* Very faint central watermark medallion */
+.watermark {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px; height: 280px;
+  opacity: .035; pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Corner ornaments ────────────────────────────────────────── */
+.corners { position: absolute; inset: -2px; pointer-events: none; z-index: 2; }
+.corners svg { position: absolute; width: 64px; height: 64px; }
+.corners svg:nth-child(1) { top: 0; left: 0; }
+.corners svg:nth-child(2) { top: 0; right: 0; transform: scaleX(-1); }
+.corners svg:nth-child(3) { bottom: 0; left: 0; transform: scaleY(-1); }
+.corners svg:nth-child(4) { bottom: 0; right: 0; transform: scale(-1); }
+
+/* ── Header ──────────────────────────────────────────────────── */
+.hd { text-align: center; position: relative; z-index: 1; }
+
+.hd-emblem { display: block; margin: 0 auto .5rem; width: 90px; height: 28px; }
+
+.hd-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: .62rem; letter-spacing: .42em;
+  color: var(--gold); text-transform: uppercase;
+  margin-bottom: .5rem;
+}
+
+.hd-title {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.9rem, 4.2vw, 3rem);
+  font-weight: 700; letter-spacing: .08em; line-height: 1;
+  color: var(--ink); margin-bottom: .4rem;
+}
+
+.rule {
+  display: flex; align-items: center; gap: .65rem;
+  justify-content: center; margin: .35rem 0;
+}
+.rl { height: 1px; width: 68px; }
+.rl-l { background: linear-gradient(to right, transparent, var(--gold-mid)); }
+.rl-r { background: linear-gradient(to left,  transparent, var(--gold-mid)); }
+.rg { color: var(--gold-mid); font-size: .58rem; letter-spacing: .18em; }
+
+.hd-sub {
+  font-style: italic;
+  font-size: clamp(.82rem, 1.3vw, 1rem);
+  color: var(--ink-soft); letter-spacing: .03em;
+}
+
+/* ── Diamond grid ────────────────────────────────────────────── */
+.grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.6rem 2.4rem;
+  position: relative; z-index: 1;
+}
+
+/* Rotated square = diamond */
+.gem {
+  width: 140px; height: 140px;
+  transform: rotate(45deg);
+  border: 1.2px solid;
+  background: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; position: relative;
+  transition:
+    transform .3s cubic-bezier(.34,1.56,.64,1),
+    box-shadow .26s ease;
+}
+
+/* Inner border */
+.gem::before {
+  content: ''; position: absolute; inset: 8px;
+  border: 0.5px solid currentColor; opacity: .28;
+  transition: opacity .2s;
+}
+
+/* Vertex circles at the 4 diamond tips */
+.v {
+  position: absolute;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid currentColor; opacity: .55;
+}
+.v-tl { top: -3.5px;    left: -3.5px; }
+.v-tr { top: -3.5px;    right: -3.5px; }
+.v-bl { bottom: -3.5px; left: -3.5px; }
+.v-br { bottom: -3.5px; right: -3.5px; }
+
+/* Counter-rotated content */
+.gem-inner {
+  transform: rotate(-45deg);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; gap: .15rem;
+  width: 90px;
+}
+
+.gem-icon { font-size: 1.3rem; line-height: 1; margin-bottom: .04rem; }
+
+.gem-name {
+  font-family: 'Cinzel', serif;
+  font-size: .67rem; font-weight: 600;
+  letter-spacing: .05em; text-transform: uppercase;
+  line-height: 1.25; color: inherit;
+}
+
+.gem-sub {
+  font-style: italic; font-size: .61rem;
+  opacity: .62; line-height: 1.2;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* Section colours */
+.gem-personal { border-color: var(--c-personal); color: var(--c-personal); }
+.gem-create   { border-color: var(--c-create);   color: var(--c-create);   }
+.gem-kings    { border-color: var(--c-kings);     color: var(--c-kings);    }
+.gem-tolkien  { border-color: var(--c-tolkien);   color: var(--c-tolkien);  }
+
+.gem:hover { transform: rotate(45deg) scale(1.07); }
+.gem:hover::before { opacity: .52; }
+.gem-personal:hover { box-shadow: 0 0 28px rgba(122,92,46,.38); background: #FAF4E8; }
+.gem-create:hover   { box-shadow: 0 0 28px rgba(59,101,53,.38); background: #EFF6EC; }
+.gem-kings:hover    { box-shadow: 0 0 28px rgba(139,26,42,.38); background: #FBF0F1; }
+.gem-tolkien:hover  { box-shadow: 0 0 28px rgba(23,78,27,.38);  background: #EEF5EE; }
+
+.gem:active { transform: rotate(45deg) scale(.97); transition-duration: .08s; }
+.gem:focus-visible { outline: 2px solid currentColor; outline-offset: 8px; }
+
+/* ── Saved-tree gem slot ─────────────────────────────────────── */
+.gem-saved:hover { box-shadow: 0 0 28px rgba(90,58,106,.38); background: #F5EFF8; }
+.gem-slot {
+  position: relative;
+  width: 140px; height: 140px;
+  display: flex; align-items: center; justify-content: center;
+}
+@media (max-height: 640px) { .gem-slot { width: 114px; height: 114px; } }
+@media (max-width:  540px) { .gem-slot { width: 118px; height: 118px; } }
+.gem-edit-btn {
+  position: absolute; top: 4px; right: 4px;
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 1px solid rgba(90,58,106,.38);
+  background: rgba(246,238,217,.92); color: #5A3A6A;
+  font-size: .6rem; cursor: pointer; z-index: 10;
+  display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(3px);
+  transition: background .15s, color .15s;
+}
+.gem-slot:hover .gem-edit-btn { display: flex; }
+.gem-edit-btn:hover { background: #5A3A6A; color: var(--paper); border-color: #5A3A6A; }
+
+/* ── Edit modal ──────────────────────────────────────────────── */
+.edit-overlay {
+  position: fixed; inset: 0;
+  background: rgba(14,8,2,.75); backdrop-filter: blur(6px);
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .26s ease;
+}
+.edit-overlay.open { opacity: 1; pointer-events: all; }
+.edit-field-lbl {
+  display: block; text-align: left;
+  font-family: 'Cinzel', serif;
+  font-size: .56rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: .28rem;
+}
+.edit-icon-btn {
+  width: 28px; height: 28px; border-radius: 3px;
+  border: 1px solid rgba(139,105,20,.3); background: var(--paper-dark);
+  font-size: .88rem; cursor: pointer; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .15s, transform .1s;
+}
+.edit-icon-btn.sel, .edit-icon-btn:hover { border-color: var(--gold); transform: scale(1.18); }
+.color-swatch {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2.5px solid transparent; cursor: pointer;
+  transition: transform .12s, border-color .15s;
+}
+.color-swatch.sel, .color-swatch:hover { transform: scale(1.3); border-color: var(--gold-mid); }
+
+/* ── Frame adapts to extra rows ──────────────────────────────── */
+html { height: auto; overflow-y: auto; }
+body { height: auto; min-height: 100%; }
+.cover {
+  height: auto; min-height: 100vh;
+  align-items: flex-start;
+  padding: max(4vh, 2rem) 1.2rem;
+}
+/* Height becomes content-driven; layout stacks top-to-bottom */
+.frame { height: auto; justify-content: flex-start; }
+/* Rotated diamonds overhang their layout box by ~30 px at top/bottom.
+   56 px margins give ~26 px of visible breathing room in all cases. */
+.hd { margin-bottom: 3.5rem; }
+.ft { margin-top:    3.5rem; }
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.ft { text-align: center; position: relative; z-index: 1; }
+.ft-text {
+  font-style: italic; font-size: .76rem;
+  color: var(--gold); letter-spacing: .14em;
+}
+
+/* ── Language bar ────────────────────────────────────────────── */
+.langs {
+  position: fixed; top: 1rem; right: 1.5rem; z-index: 100;
+  display: flex; gap: .35rem;
+}
+.lang-btn {
+  font-family: 'Cinzel', serif;
+  font-size: .58rem; letter-spacing: .14em;
+  padding: .2rem .5rem;
+  border: 1px solid rgba(200,168,66,.45);
+  background: rgba(246,238,217,.85); color: var(--gold);
+  cursor: pointer;
+  transition: background .16s, color .16s, border-color .16s;
+  backdrop-filter: blur(4px);
+}
+.lang-btn:hover, .lang-btn.on {
+  background: var(--gold); color: var(--paper); border-color: var(--gold);
+}
+
+/* ── Music button ────────────────────────────────────────────── */
+.music-btn {
+  position: fixed; bottom: 1.1rem; right: 1.5rem; z-index: 100;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid rgba(200,168,66,.45);
+  background: rgba(246,238,217,.85); color: var(--gold);
+  font-size: .9rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .16s, color .16s;
+  backdrop-filter: blur(4px);
+}
+.music-btn:hover { background: var(--gold); color: var(--paper); }
+
+/* ── Password modal ──────────────────────────────────────────── */
+.pw-overlay {
+  position: fixed; inset: 0;
+  background: rgba(14,8,2,.75); backdrop-filter: blur(6px);
+  z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .26s ease;
+}
+.pw-overlay.open { opacity: 1; pointer-events: all; }
+
+.pw-card {
+  background: var(--paper);
+  border: 1.2px solid var(--c-personal);
+  padding: 2.6rem 3rem; text-align: center;
+  width: min(380px, 92vw);
+  box-shadow: 0 12px 60px rgba(0,0,0,.4);
+  position: relative;
+}
+/* Corner brackets on modal */
+.pw-card::before, .pw-card::after {
+  content: ''; position: absolute;
+  width: 20px; height: 20px;
+  border-color: var(--c-personal); border-style: solid;
+}
+.pw-card::before { top: 7px; left: 7px; border-width: 1.2px 0 0 1.2px; }
+.pw-card::after  { bottom: 7px; right: 7px; border-width: 0 1.2px 1.2px 0; }
+
+.pw-title {
+  font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 600;
+  color: var(--c-personal); margin-bottom: .3rem;
+}
+.pw-sub {
+  font-style: italic; font-size: .84rem;
+  color: var(--ink-soft); margin-bottom: 1.5rem; line-height: 1.55;
+}
+.pw-input {
+  width: 100%; padding: .55rem 1rem;
+  border: 1px solid var(--c-personal);
+  background: var(--paper-dark); color: var(--ink);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; letter-spacing: .2em;
+  text-align: center; outline: none; margin-bottom: .6rem;
+  transition: border-color .18s;
+}
+.pw-input:focus { border-color: var(--gold); }
+.pw-err {
+  font-style: italic; font-size: .76rem; color: var(--c-kings);
+  min-height: 1.1em; margin-bottom: .5rem;
+}
+.pw-btns { display: flex; gap: .7rem; justify-content: center; }
+.pw-btn {
+  font-family: 'Cinzel', serif;
+  font-size: .66rem; letter-spacing: .1em; text-transform: uppercase;
+  padding: .44rem 1.4rem; border: 1px solid;
+  background: transparent; cursor: pointer;
+  transition: background .16s, color .16s;
+}
+.pw-btn-ok { border-color: var(--c-personal); color: var(--c-personal); }
+.pw-btn-ok:hover { background: var(--c-personal); color: var(--paper); }
+.pw-btn-no { border-color: var(--ink-soft); color: var(--ink-soft); }
+.pw-btn-no:hover { background: var(--ink-soft); color: var(--paper); }
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-height: 640px) {
+  .frame { padding: 1.4rem 2.2rem 1.2rem; }
+  .gem { width: 114px; height: 114px; }
+  .gem-inner { width: 74px; }
+  .hd-title { font-size: 1.75rem; }
+}
+@media (max-width: 540px) {
+  .frame { padding: 1.6rem 1.2rem; }
+  .gem { width: 118px; height: 118px; }
+  .gem-inner { width: 76px; }
+  .gem-name { font-size: .6rem; }
+  .grid { gap: 1rem 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="langs">
+  <button class="lang-btn" onclick="setLang('pl')">PL</button>
+  <button class="lang-btn" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('es')">ES</button>
+</div>
+
+<button class="music-btn" id="music-btn" title="Music">♪</button>
+
+<!-- Password overlay -->
+<div class="pw-overlay" id="pw-overlay" onclick="onOverlay(event)">
+  <div class="pw-card">
+    <div class="pw-title" id="pw-title"></div>
+    <div class="pw-sub"   id="pw-sub"></div>
+    <input type="password" id="pw-input" class="pw-input"
+           placeholder="••••••••••"
+           onkeydown="if(event.key==='Enter')submitPw()">
+    <div class="pw-err" id="pw-err"></div>
+    <div class="pw-btns">
+      <button class="pw-btn pw-btn-ok" id="pw-ok" onclick="submitPw()"></button>
+      <button class="pw-btn pw-btn-no" id="pw-no" onclick="closePw()"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit saved tree modal -->
+<div class="edit-overlay" id="edit-overlay" onclick="onEditOverlay(event)">
+  <div class="pw-card" style="width:min(400px,92vw)">
+    <div class="pw-title">Edit Tree</div>
+    <div class="pw-sub">Rename, change icon or set a password</div>
+
+    <label class="edit-field-lbl">Name</label>
+    <input class="pw-input" id="edit-name" placeholder="Display name" style="margin-bottom:1rem"
+           onkeydown="if(event.key==='Enter')saveEditModal()">
+
+    <label class="edit-field-lbl">Icon</label>
+    <div id="edit-icons-row" style="display:flex;gap:.35rem;flex-wrap:wrap;justify-content:center;margin-bottom:1rem"></div>
+
+    <label class="edit-field-lbl">Colour</label>
+    <div id="edit-colors-row" style="display:flex;gap:.5rem;justify-content:center;margin-bottom:1rem"></div>
+
+    <label class="edit-field-lbl">Password
+      <span style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;text-transform:none;letter-spacing:0;opacity:.7">(leave blank for none)</span>
+    </label>
+    <input class="pw-input" id="edit-pw" type="password" placeholder="••••••••" style="margin-bottom:1.4rem"
+           onkeydown="if(event.key==='Enter')saveEditModal()">
+
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <button class="pw-btn" style="color:var(--c-kings);border-color:var(--c-kings)" onclick="confirmDeleteTree()">Remove</button>
+      <div class="pw-btns" style="margin:0">
+        <button class="pw-btn pw-btn-no" onclick="closeEditModal()">Cancel</button>
+        <button class="pw-btn pw-btn-ok" onclick="saveEditModal()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main cover -->
+<div class="cover">
+<div class="frame">
+
+  <!-- Faint watermark medallion -->
+  <svg class="watermark" viewBox="0 0 280 280" fill="none">
+    <circle cx="140" cy="140" r="120" stroke="#8B6914" stroke-width="0.8"/>
+    <circle cx="140" cy="140" r="100" stroke="#8B6914" stroke-width="0.4"/>
+    <circle cx="140" cy="140" r="60"  stroke="#8B6914" stroke-width="0.6"/>
+    <circle cx="140" cy="140" r="8"   stroke="#8B6914" stroke-width="0.6"/>
+    <circle cx="140" cy="140" r="2"   fill="#8B6914"/>
+    <!-- 8 radiating spokes -->
+    <line x1="140" y1="20"  x2="140" y2="80"  stroke="#8B6914" stroke-width="0.5"/>
+    <line x1="140" y1="200" x2="140" y2="260" stroke="#8B6914" stroke-width="0.5"/>
+    <line x1="20"  y1="140" x2="80"  y2="140" stroke="#8B6914" stroke-width="0.5"/>
+    <line x1="200" y1="140" x2="260" y2="140" stroke="#8B6914" stroke-width="0.5"/>
+    <line x1="55"  y1="55"  x2="97"  y2="97"  stroke="#8B6914" stroke-width="0.3"/>
+    <line x1="183" y1="183" x2="225" y2="225" stroke="#8B6914" stroke-width="0.3"/>
+    <line x1="225" y1="55"  x2="183" y2="97"  stroke="#8B6914" stroke-width="0.3"/>
+    <line x1="55"  y1="225" x2="97"  y2="183" stroke="#8B6914" stroke-width="0.3"/>
+    <!-- 4 cardinal dots -->
+    <circle cx="140" cy="20"  r="3" fill="none" stroke="#8B6914" stroke-width="0.6"/>
+    <circle cx="140" cy="260" r="3" fill="none" stroke="#8B6914" stroke-width="0.6"/>
+    <circle cx="20"  cy="140" r="3" fill="none" stroke="#8B6914" stroke-width="0.6"/>
+    <circle cx="260" cy="140" r="3" fill="none" stroke="#8B6914" stroke-width="0.6"/>
+  </svg>
+
+  <!-- Corner ornaments -->
+  <div class="corners">
+    <svg viewBox="0 0 64 64" fill="none">
+      <path d="M1 63 L1 1 L63 1" stroke="#8B6914" stroke-width="1.5"/>
+      <path d="M8 56 L8 8 L56 8" stroke="#C8A842" stroke-width=".5" opacity=".4"/>
+      <circle cx="1"  cy="1"  r="2.5" fill="#8B6914"/>
+      <circle cx="11" cy="11" r="1.5" fill="none" stroke="#C8A842" stroke-width=".7" opacity=".7"/>
+      <circle cx="11" cy="11" r=".6"  fill="#C8A842" opacity=".7"/>
+      <path d="M 20,1 L 11,10" stroke="#8B6914" stroke-width=".8" opacity=".6"/>
+      <path d="M 1,20 L 10,11" stroke="#8B6914" stroke-width=".8" opacity=".6"/>
+    </svg>
+    <svg viewBox="0 0 64 64" fill="none">
+      <path d="M1 63 L1 1 L63 1" stroke="#8B6914" stroke-width="1.5"/>
+      <path d="M8 56 L8 8 L56 8" stroke="#C8A842" stroke-width=".5" opacity=".4"/>
+      <circle cx="1"  cy="1"  r="2.5" fill="#8B6914"/>
+      <circle cx="11" cy="11" r="1.5" fill="none" stroke="#C8A842" stroke-width=".7" opacity=".7"/>
+      <circle cx="11" cy="11" r=".6"  fill="#C8A842" opacity=".7"/>
+      <path d="M 20,1 L 11,10" stroke="#8B6914" stroke-width=".8" opacity=".6"/>
+      <path d="M 1,20 L 10,11" stroke="#8B6914" stroke-width=".8" opacity=".6"/>
+    </svg>
+    <svg viewBox="0 0 64 64" fill="none">
+      <path d="M1 63 L1 1 L63 1" stroke="#8B6914" stroke-width="1.5"/>
+      <path d="M8 56 L8 8 L56 8" stroke="#C8A842" stroke-width=".5" opacity=".4"/>
+      <circle cx="1"  cy="1"  r="2.5" fill="#8B6914"/>
+      <circle cx="11" cy="11" r="1.5" fill="none" stroke="#C8A842" stroke-width=".7" opacity=".7"/>
+      <circle cx="11" cy="11" r=".6"  fill="#C8A842" opacity=".7"/>
+      <path d="M 20,1 L 11,10" stroke="#8B6914" stroke-width=".8" opacity=".6"/>
+      <path d="M 1,20 L 10,11" stroke="#8B6914" stroke-width=".8" opacity=".6"/>
+    </svg>
+    <svg viewBox="0 0 64 64" fill="none">
+      <path d="M1 63 L1 1 L63 1" stroke="#8B6914" stroke-width="1.5"/>
+      <path d="M8 56 L8 8 L56 8" stroke="#C8A842" stroke-width=".5" opacity=".4"/>
+      <circle cx="1"  cy="1"  r="2.5" fill="#8B6914"/>
+      <circle cx="11" cy="11" r="1.5" fill="none" stroke="#C8A842" stroke-width=".7" opacity=".7"/>
+      <circle cx="11" cy="11" r=".6"  fill="#C8A842" opacity=".7"/>
+      <path d="M 20,1 L 11,10" stroke="#8B6914" stroke-width=".8" opacity=".6"/>
+      <path d="M 1,20 L 10,11" stroke="#8B6914" stroke-width=".8" opacity=".6"/>
+    </svg>
+  </div>
+
+  <!-- Header -->
+  <header class="hd">
+    <!-- Central emblem -->
+    <svg class="hd-emblem" viewBox="0 0 90 28" fill="none">
+      <line x1="0"  y1="14" x2="32" y2="14" stroke="#C8A842" stroke-width=".7"/>
+      <line x1="58" y1="14" x2="90" y2="14" stroke="#C8A842" stroke-width=".7"/>
+      <circle cx="45" cy="14" r="8"   fill="none" stroke="#8B6914" stroke-width=".9"/>
+      <circle cx="45" cy="14" r="3.5" fill="none" stroke="#C8A842" stroke-width=".5"/>
+      <circle cx="45" cy="14" r="1.2" fill="#8B6914"/>
+      <!-- 4 cardinal marks -->
+      <line x1="45" y1="3"  x2="45" y2="6"  stroke="#8B6914" stroke-width=".7"/>
+      <line x1="45" y1="22" x2="45" y2="25" stroke="#8B6914" stroke-width=".7"/>
+      <line x1="34" y1="14" x2="37" y2="14" stroke="#8B6914" stroke-width=".7"/>
+      <line x1="53" y1="14" x2="56" y2="14" stroke="#8B6914" stroke-width=".7"/>
+      <!-- Diagonal marks -->
+      <line x1="39" y1="8"  x2="41" y2="10" stroke="#C8A842" stroke-width=".4" opacity=".6"/>
+      <line x1="49" y1="18" x2="51" y2="20" stroke="#C8A842" stroke-width=".4" opacity=".6"/>
+      <line x1="51" y1="8"  x2="49" y2="10" stroke="#C8A842" stroke-width=".4" opacity=".6"/>
+      <line x1="41" y1="18" x2="39" y2="20" stroke="#C8A842" stroke-width=".4" opacity=".6"/>
+    </svg>
+
+    <div class="hd-eyebrow" id="t-eyebrow"></div>
+    <h1 class="hd-title">Chronica Originum</h1>
+    <div class="rule">
+      <div class="rl rl-l"></div>
+      <svg width="48" height="10" viewBox="0 0 48 10" fill="none">
+        <circle cx="24" cy="5" r="2.2" fill="none" stroke="#C8A842" stroke-width=".7"/>
+        <circle cx="24" cy="5" r=".7" fill="#C8A842"/>
+        <line x1="0"  y1="5" x2="19" y2="5" stroke="#C8A842" stroke-width=".5"/>
+        <line x1="29" y1="5" x2="48" y2="5" stroke="#C8A842" stroke-width=".5"/>
+        <circle cx="6"  cy="5" r="1" fill="none" stroke="#C8A842" stroke-width=".5"/>
+        <circle cx="42" cy="5" r="1" fill="none" stroke="#C8A842" stroke-width=".5"/>
+      </svg>
+      <div class="rl rl-r"></div>
+    </div>
+    <p class="hd-sub" id="t-sub"></p>
+  </header>
+
+  <!-- Navigation diamonds -->
+  <nav class="grid" aria-label="Tree sections">
+
+    <!-- 1 · Eliadora (personal) -->
+    <div class="gem gem-personal"
+         role="button" tabindex="0"
+         onclick="openPw()"
+         onkeydown="if(event.key==='Enter'||event.key===' ')openPw()">
+      <span class="v v-tl"></span><span class="v v-tr"></span>
+      <span class="v v-bl"></span><span class="v v-br"></span>
+      <div class="gem-inner">
+        <div class="gem-icon">⚘</div>
+        <div class="gem-name" id="g1-name"></div>
+        <div class="gem-sub" id="g1-sub"></div>
+      </div>
+    </div>
+
+    <!-- 2 · Create Your Own -->
+    <div class="gem gem-create"
+         role="button" tabindex="0"
+         onclick="go('form.html')"
+         onkeydown="if(event.key==='Enter'||event.key===' ')go('form.html')">
+      <span class="v v-tl"></span><span class="v v-tr"></span>
+      <span class="v v-bl"></span><span class="v v-br"></span>
+      <div class="gem-inner">
+        <div class="gem-icon">✍</div>
+        <div class="gem-name" id="g2-name"></div>
+        <div class="gem-sub"  id="g2-sub"></div>
+      </div>
+    </div>
+
+    <!-- 3 · Kings of Poland -->
+    <div class="gem gem-kings"
+         role="button" tabindex="0"
+         onclick="go('kings.html')"
+         onkeydown="if(event.key==='Enter'||event.key===' ')go('kings.html')">
+      <span class="v v-tl"></span><span class="v v-tr"></span>
+      <span class="v v-bl"></span><span class="v v-br"></span>
+      <div class="gem-inner">
+        <div class="gem-icon">♛</div>
+        <div class="gem-name" id="g3-name"></div>
+        <div class="gem-sub"  id="g3-sub"></div>
+      </div>
+    </div>
+
+    <!-- 4 · Tolkien World -->
+    <div class="gem gem-tolkien"
+         role="button" tabindex="0"
+         onclick="go('hobbits.html')"
+         onkeydown="if(event.key==='Enter'||event.key===' ')go('hobbits.html')">
+      <span class="v v-tl"></span><span class="v v-tr"></span>
+      <span class="v v-bl"></span><span class="v v-br"></span>
+      <div class="gem-inner">
+        <div class="gem-icon">⛰</div>
+        <div class="gem-name" id="g4-name"></div>
+        <div class="gem-sub"  id="g4-sub"></div>
+      </div>
+    </div>
+
+  </nav>
+
+  <!-- Footer -->
+  <footer class="ft">
+    <div class="rule" style="margin-bottom:.42rem">
+      <div class="rl rl-l"></div>
+      <span class="rg" style="letter-spacing:.28em">· · ·</span>
+      <div class="rl rl-r"></div>
+    </div>
+    <div class="ft-text" id="t-footer"></div>
+  </footer>
+
+</div><!-- .frame -->
+</div><!-- .cover -->
+
+<audio id="audio" loop></audio>
+<!-- Uncomment once you have the cover ambient track:
+     <script>document.getElementById('audio').src='assets/music/cover.mp3';</script> -->
+
+<script>
+// ── i18n ──────────────────────────────────────────────────────────────────
+const COPY = {
+  pl: {
+    eyebrow: 'ELIADORA',
+    sub:     'Drzewo Genealogiczne · Rodowody · Dynastie · Dziedzictwo',
+    g1n: 'Drzewo\nRodzinne',      g1s: 'Prywatne',
+    g2n: 'Drzewo\nOsobiste',      g2s: 'Utwórz',
+    g3n: 'Polska\nMonarchia',     g3s: '960 — 1795',
+    g4n: 'Świat\nTolkiena',       g4s: 'Middle-Earth',
+    footer:  'Anno Domini MMXXVI',
+    pwTitle: 'Dostęp Prywatny',
+    pwSub:   'Wprowadź hasło, aby otworzyć drzewo Eliadora',
+    pwOk:    'Wejdź', pwNo: 'Anuluj', pwErr: 'Nieprawidłowe hasło',
+    gemSubPersonal: 'osobiste',
+    delTitle: 'Usuń drzewo', delSub: 'Podaj hasło, aby usunąć z menu',
+  },
+  en: {
+    eyebrow: 'ELIADORA',
+    sub:     'Genealogical Tree · Lineages · Dynasties · Heritage',
+    g1n: 'Family\nTree',          g1s: 'Private',
+    g2n: 'Personalized\nTree',    g2s: 'Create',
+    g3n: 'Polish\nMonarchy',      g3s: '960 — 1795',
+    g4n: 'Tolkien\nWorld',        g4s: 'Middle-Earth',
+    footer:  'Anno Domini MMXXVI',
+    pwTitle: 'Private Access',
+    pwSub:   'Enter the password to open the Eliadora tree',
+    pwOk:    'Enter', pwNo: 'Cancel', pwErr: 'Incorrect password',
+    gemSubPersonal: 'personal',
+    delTitle: 'Remove tree', delSub: 'Enter password to remove from menu',
+  },
+  es: {
+    eyebrow: 'ELIADORA',
+    sub:     'Árbol Genealógico · Linajes · Dinastías · Herencia',
+    g1n: 'Árbol\nFamiliar',       g1s: 'Privado',
+    g2n: 'Árbol\nPersonalizado',  g2s: 'Crear',
+    g3n: 'Monarquía\nPolaca',     g3s: '960 — 1795',
+    g4n: 'Mundo\nTolkien',        g4s: 'Middle-Earth',
+    footer:  'Anno Domini MMXXVI',
+    pwTitle: 'Acceso Privado',
+    pwSub:   'Introduce la contraseña para abrir el árbol Eliadora',
+    pwOk:    'Entrar', pwNo: 'Cancelar', pwErr: 'Contraseña incorrecta',
+    gemSubPersonal: 'personal',
+    delTitle: 'Eliminar árbol', delSub: 'Introduce la contraseña para eliminar del menú',
+  },
+};
+
+let lang = localStorage.getItem('arbor-lang') || 'pl';
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('arbor-lang', l);
+  render();
+  renderSavedGems();
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('on', b.textContent.toLowerCase() === l)
+  );
+}
+
+function render() {
+  const t = COPY[lang];
+  document.getElementById('t-eyebrow').textContent = t.eyebrow;
+  document.getElementById('t-sub').textContent     = t.sub;
+  document.getElementById('g1-name').innerHTML     = t.g1n.replace('\n','<br>');
+  document.getElementById('g1-sub').textContent    = t.g1s;
+  document.getElementById('g2-name').innerHTML     = t.g2n.replace('\n','<br>');
+  document.getElementById('g2-sub').textContent    = t.g2s;
+  document.getElementById('g3-name').innerHTML     = t.g3n.replace('\n','<br>');
+  document.getElementById('g3-sub').textContent    = t.g3s;
+  document.getElementById('g4-name').innerHTML     = t.g4n.replace('\n','<br>');
+  document.getElementById('g4-sub').textContent    = t.g4s;
+  document.getElementById('t-footer').textContent  = t.footer;
+  document.getElementById('pw-title').textContent  = t.pwTitle;
+  document.getElementById('pw-sub').textContent    = t.pwSub;
+  document.getElementById('pw-ok').textContent     = t.pwOk;
+  document.getElementById('pw-no').textContent     = t.pwNo;
+}
+
+// ── Password ──────────────────────────────────────────────────────────────
+const PW      = 'bhu8ik,mnj';
+const PW_DEST = 'eliadora.html';
+
+function openPw() {
+  document.getElementById('pw-overlay').classList.add('open');
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-err').textContent = '';
+  setTimeout(() => document.getElementById('pw-input').focus(), 120);
+}
+function onOverlay(e) {
+  if (e.target === document.getElementById('pw-overlay')) closePw();
+}
+// pw-overlay mode flags
+let _savedTreeTarget = null;  // set when opening a password-protected saved tree
+let _openDest        = null;  // destination URL for saved tree
+let _deleteMode      = false; // set when deleting a saved tree
+
+function submitPw() {
+  const v = document.getElementById('pw-input').value;
+  const errEl = document.getElementById('pw-err');
+  const wrong = () => {
+    errEl.textContent = COPY[lang].pwErr;
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  };
+
+  if (_deleteMode) {
+    if (v === PW) {
+      const id = _editingTreeId;
+      closePw();
+      closeEditModal();
+      saveTrees(getSavedTrees().filter(t => t.id !== id));
+      renderSavedGems();
+    } else { wrong(); }
+    return;
+  }
+  if (_savedTreeTarget) {
+    if (v === _savedTreeTarget.pw) {
+      const dest = _openDest;
+      closePw();
+      window.location.href = dest;
+    } else { wrong(); }
+    return;
+  }
+  // Default: Eliadora private tree
+  if (v === PW) {
+    window.location.href = PW_DEST;
+  } else { wrong(); }
+}
+
+function closePw() {
+  document.getElementById('pw-overlay').classList.remove('open');
+  _savedTreeTarget = null;
+  _openDest        = null;
+  _deleteMode      = false;
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────
+function go(url) { window.location.href = url; }
+
+// ── Music ─────────────────────────────────────────────────────────────────
+const mBtn  = document.getElementById('music-btn');
+const audio = document.getElementById('audio');
+let playing = false;
+mBtn.addEventListener('click', () => {
+  if (!audio.src || audio.src === window.location.href) return;
+  if (playing) {
+    audio.pause(); mBtn.textContent = '♪'; playing = false;
+  } else {
+    audio.play()
+      .then(() => { mBtn.textContent = '▪'; playing = true; })
+      .catch(() => {});
+  }
+});
+
+// ── Saved-tree registry ───────────────────────────────────────────────────
+const REGISTRY_KEY = 'arbor-saved-trees';
+const EDIT_ICONS   = ['🌿','🌸','🍃','🦋','🌙','⚜️','🌺','🕊️','🌻','🍂','🌾','✦'];
+const EDIT_COLORS  = ['#5A3A6A','#2A5A5A','#7A4A3A','#4A5A2A','#2A3A6A','#8B4A5A'];
+
+function getSavedTrees() {
+  try { return JSON.parse(localStorage.getItem(REGISTRY_KEY) || '[]'); } catch { return []; }
+}
+function saveTrees(arr) { localStorage.setItem(REGISTRY_KEY, JSON.stringify(arr)); }
+
+function seedDefaultTrees() {
+  const trees = getSavedTrees();
+  if (!trees.find(t => t.id === 'Alicja')) {
+    trees.unshift({ id:'Alicja', label:'Alicja', filename:'eliadora-Alicja', icon:'🌿', color:'#5A3A6A', pw:null });
+    saveTrees(trees);
+  }
+}
+
+function escH(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderSavedGems() {
+  const grid = document.querySelector('.grid');
+  grid.querySelectorAll('.gem-slot').forEach(el => el.remove());
+  getSavedTrees().forEach(tree => {
+    const col = tree.color || '#5A3A6A';
+    const slot = document.createElement('div');
+    slot.className = 'gem-slot';
+    slot.innerHTML = `
+      <div class="gem gem-saved" tabindex="0" role="button"
+           style="border-color:${col};color:${col}"
+           onclick="openSavedTree('${escH(tree.id)}')"
+           onkeydown="if(event.key==='Enter'||event.key===' ')openSavedTree('${escH(tree.id)}')">
+        <span class="v v-tl"></span><span class="v v-tr"></span>
+        <span class="v v-bl"></span><span class="v v-br"></span>
+        <div class="gem-inner">
+          <div class="gem-icon">${escH(tree.icon||'🌿')}</div>
+          <div class="gem-name">${escH(tree.label)}</div>
+          <div class="gem-sub">${escH(COPY[lang].gemSubPersonal||'personal')}</div>
+        </div>
+      </div>
+      <button class="gem-edit-btn" title="Edit"
+              onclick="event.stopPropagation();openEditModal('${escH(tree.id)}')">✏</button>
+    `;
+    grid.appendChild(slot);
+  });
+}
+
+// ── Open a saved tree ─────────────────────────────────────────────────────
+function openSavedTree(id) {
+  const tree = getSavedTrees().find(t => t.id === id);
+  if (!tree) return;
+
+  let dest;
+  if (tree.filename && tree.filename.indexOf('_ls:') === 0) {
+    // Pass data via URL hash — origin-independent, works across all file:// pages
+    const raw = localStorage.getItem('arbor-tree-data-' + tree.filename.slice(4));
+    if (!raw) {
+      alert(lang === 'pl' ? 'Nie znaleziono danych drzewa. Zapisz je ponownie przez formularz.' :
+            lang === 'es' ? 'Datos no encontrados. Vuelve a guardarlo desde el formulario.' :
+            'Tree data not found. Please re-save it via the form.');
+      return;
+    }
+    dest = 'eliadora.html#td=' + encodeURIComponent(raw);
+  } else {
+    dest = 'eliadora.html?data=' + encodeURIComponent(tree.filename);
+  }
+
+  if (tree.pw) {
+    _savedTreeTarget = tree;
+    _openDest = dest;
+    document.getElementById('pw-title').textContent = tree.label;
+    document.getElementById('pw-sub').textContent   = COPY[lang].pwSub;
+    document.getElementById('pw-err').textContent   = '';
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-overlay').classList.add('open');
+    setTimeout(() => document.getElementById('pw-input').focus(), 120);
+  } else {
+    go(dest);
+  }
+}
+
+// Also called from form.html after saving a tree file
+function registerSavedTree(entry) {
+  const trees = getSavedTrees();
+  const idx = trees.findIndex(t => t.id === entry.id);
+  if (idx >= 0) trees[idx] = Object.assign(trees[idx], entry);
+  else trees.push(entry);
+  saveTrees(trees);
+}
+
+// ── Edit modal ────────────────────────────────────────────────────────────
+let _editingTreeId = null;
+let _editSelIcon   = '';
+let _editSelColor  = '';
+
+function openEditModal(id) {
+  const tree = getSavedTrees().find(t => t.id === id);
+  if (!tree) return;
+  _editingTreeId = id;
+  _editSelIcon   = tree.icon  || '🌿';
+  _editSelColor  = tree.color || EDIT_COLORS[0];
+
+  document.getElementById('edit-name').value = tree.label || '';
+  document.getElementById('edit-pw').value   = '';
+
+  const iconsRow = document.getElementById('edit-icons-row');
+  iconsRow.innerHTML = '';
+  EDIT_ICONS.forEach(ic => {
+    const btn = document.createElement('button');
+    btn.className = 'edit-icon-btn' + (ic === _editSelIcon ? ' sel' : '');
+    btn.textContent = ic;
+    btn.onclick = () => {
+      _editSelIcon = ic;
+      iconsRow.querySelectorAll('.edit-icon-btn').forEach(b => b.classList.remove('sel'));
+      btn.classList.add('sel');
+    };
+    iconsRow.appendChild(btn);
+  });
+
+  const colorsRow = document.getElementById('edit-colors-row');
+  colorsRow.innerHTML = '';
+  EDIT_COLORS.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch' + (c === _editSelColor ? ' sel' : '');
+    sw.style.background = c;
+    sw.title = c;
+    sw.onclick = () => {
+      _editSelColor = c;
+      colorsRow.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('sel'));
+      sw.classList.add('sel');
+    };
+    colorsRow.appendChild(sw);
+  });
+
+  document.getElementById('edit-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('edit-name').focus(), 120);
+}
+
+function closeEditModal() {
+  document.getElementById('edit-overlay').classList.remove('open');
+  _editingTreeId = null;
+}
+
+function onEditOverlay(e) {
+  if (e.target === document.getElementById('edit-overlay')) closeEditModal();
+}
+
+function saveEditModal() {
+  if (!_editingTreeId) return;
+  const label = document.getElementById('edit-name').value.trim();
+  if (!label) { document.getElementById('edit-name').focus(); return; }
+  const pwVal = document.getElementById('edit-pw').value;
+
+  const trees = getSavedTrees();
+  const idx = trees.findIndex(t => t.id === _editingTreeId);
+  if (idx < 0) { closeEditModal(); return; }
+  trees[idx].label = label;
+  trees[idx].icon  = _editSelIcon;
+  trees[idx].color = _editSelColor;
+  if (pwVal !== '') trees[idx].pw = pwVal;  // blank = keep existing pw unchanged
+  saveTrees(trees);
+  closeEditModal();
+  renderSavedGems();
+}
+
+function confirmDeleteTree() {
+  if (!_editingTreeId) return;
+  const tree = getSavedTrees().find(t => t.id === _editingTreeId);
+  // Trees without a personal password: delete immediately after confirm
+  if (!tree || !tree.pw) {
+    const label = tree ? tree.label : _editingTreeId;
+    const msg = lang === 'pl' ? `Usunąć "${label}" z menu?` :
+                lang === 'es' ? `¿Eliminar "${label}" del menú?` :
+                `Remove "${label}" from the menu?`;
+    if (!confirm(msg)) return;
+    const id = _editingTreeId;
+    closeEditModal();
+    saveTrees(getSavedTrees().filter(t => t.id !== id));
+    renderSavedGems();
+    return;
+  }
+  // Trees with a password: require password entry
+  const t = COPY[lang];
+  _deleteMode = true;
+  document.getElementById('pw-title').textContent = t.delTitle + ' — ' + escH(tree.label);
+  document.getElementById('pw-sub').textContent   = t.delSub;
+  document.getElementById('pw-err').textContent   = '';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('pw-input').focus(), 120);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+render();
+document.querySelectorAll('.lang-btn').forEach(b =>
+  b.classList.toggle('on', b.textContent.toLowerCase() === lang)
+);
+// Register a gem passed via URL params (origin-safe alternative to localStorage cross-tab)
+(function _registerFromURL() {
+  const p = new URLSearchParams(location.search);
+  const id = p.get('gem_id');
+  if (!id) return;
+  const entry = {
+    id,
+    label:    p.get('gem_label') || id,
+    filename: p.get('gem_file')  || '_ls:' + id,
+    icon:     p.get('gem_icon')  || '🌿',
+    color:    p.get('gem_color') || '#5A3A6A',
+    pw: null
+  };
+  const trees = getSavedTrees();
+  const idx = trees.findIndex(t => t.id === id);
+  if (idx >= 0) trees[idx] = Object.assign(trees[idx], entry);
+  else trees.push(entry);
+  saveTrees(trees);
+  // Read tree data from URL hash (origin-independent transfer from form.html)
+  try {
+    const hash = location.hash;
+    if (hash && hash.indexOf('#td=') === 0) {
+      localStorage.setItem('arbor-tree-data-' + id, decodeURIComponent(hash.slice(4)));
+    }
+  } catch(e) {}
+  history.replaceState({}, '', location.pathname);
+})();
+seedDefaultTrees();
+renderSavedGems();
+// Auto-refresh gems when another tab (e.g. form.html) registers a new tree
+window.addEventListener('storage', function(e) {
+  if (e.key === REGISTRY_KEY) renderSavedGems();
+});
+// Re-render when user switches back to this tab after saving a tree
+window.addEventListener('focus', renderSavedGems);
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible') renderSavedGems();
+});
+</script>
+</body>
+</html>
